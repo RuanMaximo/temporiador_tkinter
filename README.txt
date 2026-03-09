@@ -1,6 +1,6 @@
 Para criar um arquivo executavel (.exe) é só fazer os seguintes passos:
     . Crie uma pasta e insira o temporarizador.py nessa pasta.
-    . Abra o CMD e acesse esta pasta.
+    . Acesse esta pasta e na barra do caminho escreva CMD.
     . Com o pyinstaller já instalado você irá rodar o seguinte comando no CMD:
         - pyinstaller --onefile --windowed temporizador.py
 
