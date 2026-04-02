@@ -1,9 +1,14 @@
-from tkinter import *
-from tkinter import ttk
 import subprocess
+import ttkbootstrap as tb
+from ttkbootstrap import Separator
+from ttkbootstrap.constants import *
 
 total_segundos = 0
 rodando = False
+
+def mudarTema():
+    novo_tema = boxSelect.get()
+    root.style.theme_use(novo_tema)
 
 def adicionar_tempo(segundos):
     global total_segundos
@@ -12,9 +17,8 @@ def adicionar_tempo(segundos):
 
 def atualizar_label():
     hora = total_segundos // 3600
-    resto = total_segundos % 3600
-    minuto =  resto // 60
-    segundo = resto % 60
+    minuto =  (total_segundos % 3600) // 60
+    segundo = (total_segundos % 3600) % 60
     label_total.config(text=f"{hora:02d}:{minuto:02d}:{segundo:02d}")
 
 
@@ -50,45 +54,31 @@ def countdown():
         rodando = False
 
 
-root = Tk()
+root = tb.Window(themename="cosmo")
 root.title("Temporizador")
-root.geometry("565x275")
+# root.geometry("565x275")
 root.resizable(False, False)
 
-# Tema moderno
-style = ttk.Style()
-style.theme_use("clam") # existe esses: ('clam','default','classic')
+janela = tb.Frame(root, padding=20)
+janela.grid()
 
-# Estilo botão
+tb.Button(janela, text="Mudar", bootstyle="dark", command=mudarTema).grid(column=3, row=0,pady=2,ipadx=5)
 
-#botao aplicar (verde)
-style.configure("verde.TButton",font=("Segoe UI", 12, "bold"),background="#1d7e19",foreground="white",padding=3)
-style.map("verde.TButton",background=[("active", "#186615")])
+boxSelect = tb.Combobox(janela,width=13,values=['cosmo','flatly','journal','litera','solar','superhero','darkly','cyborg','vapor'])
+boxSelect.grid(column=2,row=0)
+boxSelect.set("temas")
 
-#botao cancelar (cinza)
-style.configure("cinza.TButton",font=("Segoe UI", 12, "bold"),background="#7e7e7e",foreground="white",padding=3)
-style.map("cinza.TButton",background=[("active", "#6d6d6d")])
+Separator(janela, orient="horizontal").grid(row=1, column=0, columnspan=4, sticky="ew", pady=20)
 
-#botao limpar (azul)
-style.configure("azul.TButton",font=("Segoe UI", 12, "bold"),background="#1c6ac4",foreground="white",padding=3)
-style.map("azul.TButton",background=[("active", "#135197")])
+tb.Button(janela, text="5 Min", bootstyle="warning", command=lambda: adicionar_tempo(300)).grid(column=0, row=2, padx=1, pady=10,ipadx=25)
+tb.Button(janela, text="30 Min", bootstyle="warning", command=lambda: adicionar_tempo(1800)).grid(column=1, row=2, padx=1, pady=10,ipadx=25)
+tb.Button(janela, text="1 Hora", bootstyle="warning", command=lambda: adicionar_tempo(3600)).grid(column=2, row=2, padx=1, pady=10,ipadx=25)
 
-#botao tempo (branco)
-style.configure("branco.TButton",font=("Segoe UI", 12, "bold"),background="#ffffff",foreground="black",padding=3)
-style.map("branco.TButton",background=[("active", "#DFDFDF")])
+label_total = tb.Label(janela, text="00:00:00", font=("Segoe UI", 40, "bold"),border=10)
+label_total.grid(column=0, row=3, columnspan=3, pady=20)
 
-frm = ttk.Frame(root, padding=20)
-frm.grid()
-
-ttk.Button(frm, text="1H",style="branco.TButton", command=lambda: adicionar_tempo(3600)).grid(column=0, row=1, padx=10, pady=10)
-ttk.Button(frm, text="30min",style="branco.TButton", command=lambda: adicionar_tempo(1800)).grid(column=1, row=1, padx=10, pady=10)
-ttk.Button(frm, text="5min",style="branco.TButton", command=lambda: adicionar_tempo(300)).grid(column=2, row=1, padx=10, pady=10)
-
-label_total = ttk.Label(frm, text="00:00:00", font=("Segoe UI", 40, "bold"),foreground="#000000",border=10)
-label_total.grid(column=0, row=2, columnspan=3, pady=20)
-
-ttk.Button(frm, text="Limpar",style="azul.TButton", command=limpar_total).grid(column=3, row=1, padx=10, pady=10)
-ttk.Button(frm, text="Aplicar",style="verde.TButton", command=aplicar).grid(column=3, row=2, padx=10, pady=10)
-ttk.Button(frm, text="Cancelar",style="cinza.TButton", command=cancelar_aplicacao).grid(column=3, row=3, padx=10, pady=10)
+tb.Button(janela, text="Limpar", command=limpar_total).grid(column=3, row=2, padx=10, pady=10,ipadx=5)
+tb.Button(janela, text="Aplicar", bootstyle="success", command=aplicar).grid(column=3, row=3, padx=10, pady=10,ipadx=5)
+tb.Button(janela, text="Cancelar",bootstyle="danger", command=cancelar_aplicacao).grid(column=3, row=4, padx=10, pady=10,ipadx=0)
 
 root.mainloop()
