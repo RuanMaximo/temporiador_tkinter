@@ -1,6 +1,5 @@
 import subprocess
 import ttkbootstrap as tb
-from ttkbootstrap import Separator
 from ttkbootstrap.constants import *
 
 total_segundos = 0
@@ -35,6 +34,7 @@ def aplicar():
         rodando = True
         countdown()
         subprocess.run(['shutdown','-s','-t',str(total_segundos)],shell=True)
+        label_status.config(text="Ativo")
 
 def cancelar_aplicacao():
     global rodando
@@ -42,6 +42,7 @@ def cancelar_aplicacao():
         rodando = False
         subprocess.run(['shutdown','-a'],shell=True)
         limpar_total()
+        label_status.config(text="Inativo")
 
 def countdown():
     global total_segundos, rodando
@@ -62,13 +63,16 @@ root.resizable(False, False)
 janela = tb.Frame(root, padding=20)
 janela.grid()
 
-tb.Button(janela, text="Mudar", bootstyle="dark", command=mudarTema).grid(column=3, row=0,pady=2,ipadx=5)
+label_status = tb.Label(janela, text="Inativo", font=("Segoe UI", 20, "bold"),border=10,foreground="#D3D3D3")
+label_status.grid(column=0,row=0,columnspan=2)
 
 boxSelect = tb.Combobox(janela,width=13,values=['cosmo','flatly','journal','litera','solar','superhero','darkly','cyborg','vapor'])
 boxSelect.grid(column=2,row=0)
 boxSelect.set("temas")
 
-Separator(janela, orient="horizontal").grid(row=1, column=0, columnspan=4, sticky="ew", pady=20)
+tb.Button(janela, text="Mudar", bootstyle="dark", command=mudarTema).grid(column=3, row=0,pady=2,ipadx=5)
+
+tb.Separator(janela, orient="horizontal").grid(row=1, column=0, columnspan=4, sticky="ew", pady=20)
 
 tb.Button(janela, text="5 Min", bootstyle="warning", command=lambda: adicionar_tempo(300)).grid(column=0, row=2, padx=1, pady=10,ipadx=25)
 tb.Button(janela, text="30 Min", bootstyle="warning", command=lambda: adicionar_tempo(1800)).grid(column=1, row=2, padx=1, pady=10,ipadx=25)
